@@ -37,10 +37,24 @@ Sky.prototype.run = function() {
     this.clouds.push(newCloud);
   }
 
-  for (let cloud of this.clouds) {
+  const toDelete = [];
+  for (let i = 0; i < this.clouds.length; i += 1) {
+    const cloud = this.clouds[i];
     cloud.update();
     cloud.draw(sketch);
+    const p = cloud.pos;
+    const r = cloud.diameter / 2;
+    const dist = Math.sqrt(p[0]*p[0] + p[1]*p[1]);
+    if (dist > (this.width / 2) + r) {
+      toDelete.push(i);
+    }
   }
+
+  for (let i of toDelete) {
+    this.clouds.splice(i, 1);
+  }
+
+  console.log(this.clouds.length);
 }
 
 function Cloud(x, y, v, d, c) {
@@ -62,5 +76,4 @@ Cloud.prototype.draw = function(sketch) {
   sketch.noStroke();
   sketch.fill(this.col);
   sketch.ellipse(this.pos[0], this.pos[1] + this.yOffset, this.diameter, this.diameter);
-  return this.pos;
 }
